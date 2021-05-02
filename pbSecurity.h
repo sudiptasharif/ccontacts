@@ -1,6 +1,5 @@
-#ifndef PSECURITY_H_INCLUDED
-#define PSECURITY_H_INCLUDED
+#ifndef PBSECURITY_H_INCLUDED
+#define PBSECURITY_H_INCLUDED
 
-void security();
 
 #endif
