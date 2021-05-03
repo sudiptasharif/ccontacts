@@ -141,15 +141,56 @@ int list()
         if (resultCode == SQLITE_OK)
         {
             printf("%-25s %-25s\n", person, numFrmtd);
-            while (sqlite3_step(stmt) != SQLITE_DONE)
+            resultCode = sqlite3_step(stmt);
+            while (resultCode != SQLITE_DONE)
             {
                 // column 1 corresponds to phone number
                 // column 2 corresponds to person
                 printf("%-25s %-25s\n", (char *)sqlite3_column_text(stmt, 0), (char *)sqlite3_column_text(stmt, 1));
+                resultCode = sqlite3_step(stmt);
             }
         }
         sqlite3_finalize(stmt);
     }
     sqlite3_close(ppDb);
     return resultCode;
+}
+
+/**
+ * getNameByNumber: set the ppName variable to the name of the person corresponding to the phone number
+ * 
+ * Arguments
+ * number: a phone number of a person
+ * ppName: pointer to a name variable that will be set if a name is found
+ * 
+ * Returns: the name of the person, if found, otherwise return null. Must free the return value
+ * where this function is called.
+*/
+char* getNameByNumber(char *number)
+{
+    sqlite3 *ppDb = NULL;
+    int resultCode = sqlite3_open(DB_NAME, &ppDb);
+    char *name = NULL;
+    int nameLen = 0;
+    if (resultCode == SQLITE_OK)
+    {
+        sqlite3_stmt *stmt = NULL;
+        char *sql = "SELECT name FROM PhoneBook WHERE number=?;";
+        resultCode = sqlite3_prepare_v2(ppDb, sql, -1, &stmt, NULL);
+        if(resultCode == SQLITE_OK)
+        {
+            sqlite3_bind_text(stmt, 1, number, -1, SQLITE_STATIC);
+            resultCode = sqlite3_step(stmt); // only one row should be returned because number is the primary in my PhoneBook table
+            if (resultCode == SQLITE_ROW) 
+            {
+                nameLen = strlen((const char*)sqlite3_column_text(stmt, 0));
+                name = (char*)malloc((nameLen+1)*sizeof(char));
+                strncpy(name, (const char*)(const char*)sqlite3_column_text(stmt, 0), nameLen);
+                name[nameLen] = '\0';
+            }
+        }
+        sqlite3_finalize(stmt);  
+    }
+    sqlite3_close(ppDb);
+    return name;      
 }
