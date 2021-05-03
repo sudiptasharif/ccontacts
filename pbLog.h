@@ -5,9 +5,9 @@
 #include <time.h>
 #include <unistd.h>
 
-#define AUDIT_FILE "audit.txt"
-#define LOG_FILE "pbLog.txt"
-#define PBLOG "pbLog.c"
+#define AUDIT_FILE "res/audit.txt"
+#define LOG_FILE "res/pbLog.txt"
+#define PBLOG_SRC_FILE "pbLog.c"
 
 struct logTime
 {

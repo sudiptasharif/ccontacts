@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define DB_NAME "pbDb.db"
-#define PBSQLITE "pbSQLite.c"
+#define DB_NAME "res/pbDb.db"
+#define PBSQLITE_SRC_FILE "pbSQLite.c"
 
 int initPhoneBookDb(char *errMsg);
 int add(const char *num, const char *numFrmtd, const char *name);
