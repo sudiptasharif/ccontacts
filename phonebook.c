@@ -47,14 +47,13 @@ int main(int argc, char *argv[])
         struct logTime lt = getLogTime();
         printf(str, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec);
 
-        if (logMsg(PBFILE, "main", "this is cool!"))
-        {
-            printf("writted to file: %s\n", LOG_FILE);
-        }
-        else
-        {
-            printf("failed to write to file.\n");
-        }
+        logMsg(PBFILE, "main", "this is a test!");
+
+        uid_t caller_uid = getuid();
+        logListCmd(caller_uid);
+        logAddCmd(caller_uid, getNameByNumber("2604455219"));
+        logDeleteCmd(caller_uid, "Sudipta Sharif");
+        logDeleteCmd(caller_uid, getNameByNumber("6463182686"));
     }
     else
     {

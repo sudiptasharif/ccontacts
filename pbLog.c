@@ -24,7 +24,7 @@ int logMsg(const char *file, const char *func, const char *msg)
 {
     int result = 0;
     FILE *pfile = fopen(LOG_FILE, "a");
-    char *logStr = "%02d/%02d/%04d %02d:%02d:%02d| file_name: %s| func_name: %s| msg: %s\n";
+    char *logStr = "%02d/%02d/%04d %02d:%02d:%02d:- %s | %s | %s\n";
     struct logTime lt = getLogTime();
     if (pfile != NULL)
     {
@@ -39,13 +39,13 @@ int logListCmd(uid_t uid)
 {
     int result = 0;
     char *cmd = "LIST";
-    char *logStr = "%02d/%02d/%04d %02d:%02d:%02d| command: %s| real_user_id: %d\n";
+    char *logStr = "%02d/%02d/%04d %02d:%02d:%02d:- uid: %d | %s\n";
     struct logTime lt = getLogTime();
     FILE *pfile = fopen(AUDIT_FILE, "a");
 
     if (pfile != NULL)
     {
-        fprintf(pfile, logStr, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec, cmd, uid);
+        fprintf(pfile, logStr, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec, uid, cmd);
         result = 1;
     }
     fclose(pfile);
@@ -56,13 +56,13 @@ int logAddCmd(uid_t uid, const char *name)
 {
     int result = 0;
     char *cmd = "ADD";
-    char *logStr = "%02d/%02d/%04d %02d:%02d:%02d| command: %s| real_user_id: %d| person_added: %s\n";
+    char *logStr = "%02d/%02d/%04d %02d:%02d:%02d:- uid: %d | %s | %s\n";
     struct logTime lt = getLogTime();
     FILE *pfile = fopen(AUDIT_FILE, "a");
     
     if (pfile != NULL)
     {
-        fprintf(pfile, logStr, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec, cmd, uid, name);
+        fprintf(pfile, logStr, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec, uid, cmd, name);
         result = 1;
     }
     fclose(pfile);
@@ -73,13 +73,13 @@ int logDeleteCmd(uid_t uid, const char *name)
 {
     int result = 0;
     char *cmd = "DEL";
-    char *logStr = "%02d/%02d/%04d %02d:%02d:%02d| command: %s| real_user_id: %d| person_added: %s\n";
+    char *logStr = "%02d/%02d/%04d %02d:%02d:%02d:- uid: %d | %s | %s\n";
     struct logTime lt = getLogTime();
     FILE *pfile = fopen(AUDIT_FILE, "a");
     
     if (pfile != NULL)
     {
-        fprintf(pfile, logStr, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec, cmd, uid, name);
+        fprintf(pfile, logStr, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec, uid, cmd, name);
         result = 1;
     }
     fclose(pfile);

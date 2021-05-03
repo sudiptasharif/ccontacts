@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #define AUDIT_FILE "audit.txt"
-#define LOG_FILE "app_log.txt"
+#define LOG_FILE "pbLog.txt"
 #define PBLOG "pbLog.c"
 
 struct logTime
