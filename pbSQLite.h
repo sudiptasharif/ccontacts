@@ -1,12 +1,7 @@
 #ifndef PBSQLITE_H_INCLUDED
 #define PBSQLITE_H_INCLUDED
-#include <sqlite3.h> 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#define DB_NAME "res/pbDb.db"
-#define PBSQLITE_SRC_FILE "pbSQLite.c"
+#include "masterHeader.h"
 
 int initPhoneBookDb(char *errMsg);
 int add(const char *num, const char *numFrmtd, const char *name);

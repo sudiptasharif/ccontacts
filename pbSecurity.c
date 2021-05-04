@@ -14,3 +14,14 @@ int privilegedUser()
     setresuid(caller_uid, -1, owner_uid);
     return result;
 }
+
+int validName(const char *name)
+{
+    //TODO
+    return 1;
+}
+int validNumber(const char *number)
+{
+    //TODO
+    return 1;
+}

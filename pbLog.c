@@ -1,8 +1,8 @@
 #include "pbLog.h"
 
-struct logTime getLogTime()
+struct LogTime getLogTime()
 {
-    struct logTime lt = {0,0,0,0,0,0};
+    struct LogTime lt = {0,0,0,0,0,0};
     time_t now = time(NULL);
     if (now != -1)
     {
@@ -25,7 +25,7 @@ int logMsg(const char *file, const char *func, const char *msg)
     int result = 0;
     FILE *pfile = fopen(LOG_FILE, "a");
     char *logStr = "%02d/%02d/%04d %02d:%02d:%02d:- %s | %s | %s\n";
-    struct logTime lt = getLogTime();
+    struct LogTime lt = getLogTime();
     if (pfile != NULL)
     {
         fprintf(pfile,logStr, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec, file, func, msg);
@@ -40,7 +40,7 @@ int logListCmd(uid_t uid)
     int result = 0;
     char *cmd = "LIST";
     char *logStr = "%02d/%02d/%04d %02d:%02d:%02d:- uid: %d | %s\n";
-    struct logTime lt = getLogTime();
+    struct LogTime lt = getLogTime();
     FILE *pfile = fopen(AUDIT_FILE, "a");
 
     if (pfile != NULL)
@@ -57,7 +57,7 @@ int logAddCmd(uid_t uid, const char *name)
     int result = 0;
     char *cmd = "ADD";
     char *logStr = "%02d/%02d/%04d %02d:%02d:%02d:- uid: %d | %s | %s\n";
-    struct logTime lt = getLogTime();
+    struct LogTime lt = getLogTime();
     FILE *pfile = fopen(AUDIT_FILE, "a");
     
     if (pfile != NULL)
@@ -74,7 +74,7 @@ int logDeleteCmd(uid_t uid, const char *name)
     int result = 0;
     char *cmd = "DEL";
     char *logStr = "%02d/%02d/%04d %02d:%02d:%02d:- uid: %d | %s | %s\n";
-    struct logTime lt = getLogTime();
+    struct LogTime lt = getLogTime();
     FILE *pfile = fopen(AUDIT_FILE, "a");
     
     if (pfile != NULL)
