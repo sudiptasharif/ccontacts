@@ -31,8 +31,7 @@ int initPhoneBookDb(char *errMsg)
  * numFrmtd: valid formatted phone number passed as argument to the ADD command.
  * name: name of the person
  * 
- * Returns: the number of rows affected by the INSERT statement. 
- * Otherwise if there is an error returns that SQLITE error code. 
+ * Returns: SQLITE_DONE, otherwise corresponding SQLite error code.
  * 
 */
 int add(const char *num, const char *numFrmtd, const char *name)
@@ -50,8 +49,7 @@ int add(const char *num, const char *numFrmtd, const char *name)
             sqlite3_bind_text(stmt, 2, numFrmtd, -1, SQLITE_STATIC);
             sqlite3_bind_text(stmt, 3, name, -1, SQLITE_STATIC);
 
-            sqlite3_step(stmt);
-            resultCode = sqlite3_changes(ppDb);
+            resultCode = sqlite3_step(stmt);
         }
         sqlite3_finalize(stmt); 
     }
@@ -65,13 +63,14 @@ int add(const char *num, const char *numFrmtd, const char *name)
  * Arguments
  * name: name of the person
  * 
- * Returns: the number of rows affected by the DELETE statement. 
- * Otherwise if there is an error returns that SQLITE error code.
+ * Returns: SQLITE_DONE on success. Otherwise will return PHONE_BOOK_NO_RECORD if no record to delete.
+ * Or will return corresponding SQLite error code.
 */
 int deleteByName(const char *name)
 {
     sqlite3 *ppDb = NULL;
     int resultCode = sqlite3_open(DB_NAME, &ppDb);
+    int recordsDeleted = 0;
     if (resultCode == SQLITE_OK)
     {
         sqlite3_stmt *stmt = NULL;
@@ -80,9 +79,16 @@ int deleteByName(const char *name)
         if(resultCode == SQLITE_OK)
         {
             sqlite3_bind_text(stmt, 1, name, -1, SQLITE_STATIC);
-            sqlite3_step(stmt);
-            resultCode = sqlite3_changes(ppDb);
-
+            resultCode = sqlite3_step(stmt);
+            recordsDeleted = sqlite3_changes(ppDb);
+            if ((resultCode == SQLITE_DONE) && (recordsDeleted >= 1))
+            {
+                resultCode = SQLITE_DONE;
+            }
+            else if ((resultCode == SQLITE_DONE) && (recordsDeleted == 0))
+            {
+                resultCode = PHONE_BOOK_NO_RECORD;
+            }            
         }
         sqlite3_finalize(stmt);
     }
@@ -96,13 +102,14 @@ int deleteByName(const char *name)
  * Arguments
  * number: number of the person
  * 
- * Returns: the number of rows affected by the DELETE statement. 
- * Otherwise if there is an error returns that SQLITE error code.
+ * Returns: SQLITE_DONE on success. Otherwise will return PHONE_BOOK_NO_RECORD if no record to delete.
+ * Or will return corresponding SQLite error code.
 */
 int deleteByNumber(const char *number)
 {
     sqlite3 *ppDb = NULL;
     int resultCode = sqlite3_open(DB_NAME, &ppDb);
+    int recordsDeleted = 0;
     if (resultCode == SQLITE_OK)
     {
         sqlite3_stmt *stmt = NULL;
@@ -111,9 +118,16 @@ int deleteByNumber(const char *number)
         if(resultCode == SQLITE_OK)
         {
             sqlite3_bind_text(stmt, 1, number, -1, SQLITE_STATIC);
-            sqlite3_step(stmt);
-            resultCode = sqlite3_changes(ppDb);
-
+            resultCode = sqlite3_step(stmt);
+            recordsDeleted = sqlite3_changes(ppDb);
+            if ((resultCode == SQLITE_DONE) && (recordsDeleted == 1))
+            {
+                resultCode = SQLITE_DONE;
+            }
+            else if ((resultCode == SQLITE_DONE) && (recordsDeleted == 0))
+            {
+                resultCode = PHONE_BOOK_NO_RECORD;
+            }
         }
         sqlite3_finalize(stmt);  
     }
@@ -124,7 +138,7 @@ int deleteByNumber(const char *number)
 /**
  * list: returns all the records from the PhoneBook table by name.
  *  
- * Returns: SQLITE_OK (0) or SQLITE_DONE (101) if no errors, otherwise the corresponding 
+ * Returns: SQLITE_DONE (101) if no errors, otherwise returns the corresponding 
  * SQLITE error code. 
 */
 int list()

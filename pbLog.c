@@ -2,7 +2,7 @@
 
 struct LogTime getLogTime()
 {
-    struct LogTime lt = {0,0,0,0,0,0};
+    struct LogTime lt = {0, 0, 0, 0, 0, 0};
     time_t now = time(NULL);
     if (now != -1)
     {
@@ -28,11 +28,19 @@ int logMsg(const char *file, const char *func, const char *msg)
     struct LogTime lt = getLogTime();
     if (pfile != NULL)
     {
-        fprintf(pfile,logStr, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec, file, func, msg);
+        fprintf(pfile, logStr, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec, file, func, msg);
         result = 1;
     }
     fclose(pfile);
     return result;
+}
+
+int logIntMsg(const char *file, const char *func, int msgInt)
+{
+    char msg[MAX_ERROR_MSG_LENGTH];
+    memset(msg, NULL_TERMINATOR, MAX_ERROR_MSG_LENGTH * sizeof(msg[0]));
+    snprintf(msg, MAX_ERROR_MSG_LENGTH, "resultCode = %d", msgInt);
+    return logMsg(file, func, msg);
 }
 
 int logListCmd(uid_t uid)
@@ -59,7 +67,7 @@ int logAddCmd(uid_t uid, const char *name)
     char *logStr = "%02d/%02d/%04d %02d:%02d:%02d:- uid: %d | %s | %s\n";
     struct LogTime lt = getLogTime();
     FILE *pfile = fopen(AUDIT_FILE, "a");
-    
+
     if (pfile != NULL)
     {
         fprintf(pfile, logStr, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec, uid, cmd, name);
@@ -76,12 +84,12 @@ int logDeleteCmd(uid_t uid, const char *name)
     char *logStr = "%02d/%02d/%04d %02d:%02d:%02d:- uid: %d | %s | %s\n";
     struct LogTime lt = getLogTime();
     FILE *pfile = fopen(AUDIT_FILE, "a");
-    
+
     if (pfile != NULL)
     {
         fprintf(pfile, logStr, lt.month, lt.day, lt.year, lt.hour, lt.min, lt.sec, uid, cmd, name);
         result = 1;
     }
     fclose(pfile);
-    return result;    
+    return result;
 }

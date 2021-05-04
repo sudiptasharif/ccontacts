@@ -13,7 +13,7 @@
 
 #define NULL_TERMINATOR '\0'
 #define MAX_ERROR_MSG_LENGTH 100
-#define CMD_EXECUTION_FAILED 0
+#define PHONE_BOOK_NO_RECORD 0
 
 
 #include <stdio.h>

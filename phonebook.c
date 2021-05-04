@@ -77,43 +77,65 @@ int validTerminalArgs(char *argv[], struct Command cmd)
 void executeListCmd()
 {
     int resultCode = list();
-    if ((resultCode != SQLITE_OK) && (resultCode != SQLITE_DONE))
+    if (resultCode != SQLITE_DONE)
     {
-        printf("\nUnable to list all members. We are working on the issue. Please try again later.\n\n");
-        char msg[MAX_ERROR_MSG_LENGTH];
-        memset(msg, NULL_TERMINATOR, MAX_ERROR_MSG_LENGTH * sizeof(msg[0]));
-        snprintf(msg, MAX_ERROR_MSG_LENGTH, "SQLITE CODE = %d", resultCode);
-        logMsg(PHONEBOOK_C_FILE, "executeListCmd", msg);
+        printf("\nMember list not produced. Incident reported. Try again later.\n\n");
+        logIntMsg(PHONEBOOK_C_FILE, "executeDelByNumberCmd", resultCode);
     }
 }
 
 void executeAddCmd(char *name, char *number)
 {
     int resultCode = add(number, number, name);
-    if (resultCode != CMD_EXECUTION_FAILED)
+    if (resultCode == SQLITE_DONE)
     {
-        printf("\nMember added successfully.\n\n");
+        printf("\nMember added.\n\n");
+    }
+    else if (resultCode == SQLITE_CONSTRAINT)
+    {
+        printf("\nMember not added. Duplicate phone number. %s exists in database.\n\n", number);
     }
     else
     {
-        printf("\nUnable to add member. We are working on the issue. Please try again later.\n\n");
-
-        char msg[MAX_ERROR_MSG_LENGTH];
-        memset(msg, NULL_TERMINATOR, MAX_ERROR_MSG_LENGTH * sizeof(msg[0]));
-        snprintf(msg, MAX_ERROR_MSG_LENGTH, "resultCode = %d", resultCode);
-        logMsg(PHONEBOOK_C_FILE, "executeAddCmd", msg);
+        printf("\nMember not added. Incident reported. Try again later.\n\n");
+        logIntMsg(PHONEBOOK_C_FILE, "executeDelByNumberCmd", resultCode);
     }
 }
 
 void executeDelByNumberCmd(char *number)
 {
-
+    int resultCode = deleteByNumber(number);
+    if (resultCode == SQLITE_DONE)
+    {
+        printf("\nMember deleted.\n\n.");
+    }
+    else if (resultCode == PHONE_BOOK_NO_RECORD)
+    {
+        printf("\nMember not deleted. No record in database.\n\n");
+    }
+    else
+    {
+        printf("\nMember not deleted. Incident reported. Try again later.\n\n");
+        logIntMsg(PHONEBOOK_C_FILE, "executeDelByNumberCmd", resultCode);
+    }
 }
 
 void executeDelByNameCmd(char *name)
 {
-    // TODO;
-    printf("Working on it!\n");
+    int resultCode = deleteByName(name);
+    if (resultCode == SQLITE_DONE)
+    {
+        printf("\nMember deleted.\n\n.");
+    }
+    else if (resultCode == PHONE_BOOK_NO_RECORD)
+    {
+        printf("\nMember not deleted. No record in database.\n\n");
+    }
+    else
+    {
+        printf("\nMember not deleted. Incident reported. Try again later.\n\n");
+        logIntMsg(PHONEBOOK_C_FILE, "executeDelByNumberCmd", resultCode);
+    }
 }
 
 void executeCmd(struct Command cmd, char *argv[])
