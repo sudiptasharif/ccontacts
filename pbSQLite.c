@@ -124,7 +124,7 @@ int deleteByNumber(const char *number)
 /**
  * list: returns all the records from the PhoneBook table by name.
  *  
- * Returns: SQLITE_OK (0) if no errors, otherwise the corresponding 
+ * Returns: SQLITE_OK (0) or SQLITE_DONE (101) if no errors, otherwise the corresponding 
  * SQLITE error code. 
 */
 int list()

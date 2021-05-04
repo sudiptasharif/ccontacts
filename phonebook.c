@@ -76,20 +76,38 @@ int validTerminalArgs(char *argv[], struct Command cmd)
 
 void executeListCmd()
 {
-    // TODO;
-    printf("Working on it!\n");
+    int resultCode = list();
+    if ((resultCode != SQLITE_OK) && (resultCode != SQLITE_DONE))
+    {
+        printf("\nUnable to list all members. We are working on the issue. Please try again later.\n\n");
+        char msg[MAX_ERROR_MSG_LENGTH];
+        memset(msg, NULL_TERMINATOR, MAX_ERROR_MSG_LENGTH * sizeof(msg[0]));
+        snprintf(msg, MAX_ERROR_MSG_LENGTH, "SQLITE CODE = %d", resultCode);
+        logMsg(PHONEBOOK_C_FILE, "executeListCmd", msg);
+    }
 }
 
 void executeAddCmd(char *name, char *number)
 {
-    // TODO;
-    printf("Working on it!\n");
+    int resultCode = add(number, number, name);
+    if (resultCode != CMD_EXECUTION_FAILED)
+    {
+        printf("\nMember added successfully.\n\n");
+    }
+    else
+    {
+        printf("\nUnable to add member. We are working on the issue. Please try again later.\n\n");
+
+        char msg[MAX_ERROR_MSG_LENGTH];
+        memset(msg, NULL_TERMINATOR, MAX_ERROR_MSG_LENGTH * sizeof(msg[0]));
+        snprintf(msg, MAX_ERROR_MSG_LENGTH, "resultCode = %d", resultCode);
+        logMsg(PHONEBOOK_C_FILE, "executeAddCmd", msg);
+    }
 }
 
 void executeDelByNumberCmd(char *number)
 {
-    // TODO;
-    printf("Working on it!\n");
+
 }
 
 void executeDelByNameCmd(char *name)

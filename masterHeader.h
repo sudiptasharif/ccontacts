@@ -11,6 +11,10 @@
 #define LOG_FILE "res/pbLog.txt"
 #define DB_NAME "res/pbDb.db"
 
+#define NULL_TERMINATOR '\0'
+#define MAX_ERROR_MSG_LENGTH 100
+#define CMD_EXECUTION_FAILED 0
+
 
 #include <stdio.h>
 #include <stdlib.h>
