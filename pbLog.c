@@ -1,4 +1,4 @@
-#include "pbLog.h"
+#include "masterHeader.h"
 
 struct LogTime getLogTime()
 {
@@ -35,11 +35,11 @@ int logMsg(const char *file, const char *func, const char *msg)
     return result;
 }
 
-int logIntMsg(const char *file, const char *func, int msgInt)
+int logErrorCode(const char *file, const char *func, const char *errorMsg, int errorCode)
 {
     char msg[MAX_ERROR_MSG_LENGTH];
     memset(msg, NULL_TERMINATOR, MAX_ERROR_MSG_LENGTH * sizeof(msg[0]));
-    snprintf(msg, MAX_ERROR_MSG_LENGTH, "resultCode = %d", msgInt);
+    snprintf(msg, MAX_ERROR_MSG_LENGTH, "%s: %d", errorMsg, errorCode);
     return logMsg(file, func, msg);
 }
 

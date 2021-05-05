@@ -1,4 +1,4 @@
-#include "phonebook.h"
+#include "masterHeader.h"
 
 struct Command setCommand(int argCount, char *cmdStr)
 {
@@ -80,7 +80,7 @@ void executeListCmd()
     if (resultCode != SQLITE_DONE)
     {
         printf("\nMember list not produced. Incident reported. Try again later.\n\n");
-        logIntMsg(PHONEBOOK_C_FILE, "executeDelByNumberCmd", resultCode);
+        logErrorCode(PHONEBOOK_C_FILE, "executeListCmd", "SQLITE CODE", resultCode);
     }
 }
 
@@ -98,7 +98,7 @@ void executeAddCmd(char *name, char *number)
     else
     {
         printf("\nMember not added. Incident reported. Try again later.\n\n");
-        logIntMsg(PHONEBOOK_C_FILE, "executeDelByNumberCmd", resultCode);
+        logErrorCode(PHONEBOOK_C_FILE, "executeAddCmd", "SQLITE CODE", resultCode);
     }
 }
 
@@ -116,7 +116,7 @@ void executeDelByNumberCmd(char *number)
     else
     {
         printf("\nMember not deleted. Incident reported. Try again later.\n\n");
-        logIntMsg(PHONEBOOK_C_FILE, "executeDelByNumberCmd", resultCode);
+        logErrorCode(PHONEBOOK_C_FILE, "executeDelByNumberCmd", "SQLITE CODE",resultCode);
     }
 }
 
@@ -134,7 +134,7 @@ void executeDelByNameCmd(char *name)
     else
     {
         printf("\nMember not deleted. Incident reported. Try again later.\n\n");
-        logIntMsg(PHONEBOOK_C_FILE, "executeDelByNumberCmd", resultCode);
+        logErrorCode(PHONEBOOK_C_FILE, "executeDelByNameCmd", "SQLITE CODE", resultCode);
     }
 }
 
@@ -144,15 +144,15 @@ void executeCmd(struct Command cmd, char *argv[])
     {
         executeListCmd();
     }
-    else if ((cmd.cmdCode == ADD_CMD_CODE) && (validName(argv[TERMINAL_ADD_ARG1_POS])) && (validNumber(argv[TERMINAL_ADD_ARG2_POS])))
+    else if ((cmd.cmdCode == ADD_CMD_CODE) && (validName(argv[TERMINAL_ADD_ARG1_POS]) == VALID_INPUT) && (validNumber(argv[TERMINAL_ADD_ARG2_POS]) == VALID_INPUT))
     {
         executeAddCmd(argv[TERMINAL_ADD_ARG1_POS], argv[TERMINAL_ADD_ARG2_POS]);
     }
-    else if ((cmd.cmdCode == DEL_CMD_CODE) && validName(argv[TERMINAL_DEL_ARG_POS]))
+    else if ((cmd.cmdCode == DEL_CMD_CODE) && (validName(argv[TERMINAL_DEL_ARG_POS]) == VALID_INPUT))
     {
         executeDelByNameCmd(argv[TERMINAL_DEL_ARG_POS]);
     }
-    else if ((cmd.cmdCode == DEL_CMD_CODE) && validNumber(argv[TERMINAL_DEL_ARG_POS]))
+    else if ((cmd.cmdCode == DEL_CMD_CODE) && (validNumber(argv[TERMINAL_DEL_ARG_POS]) == VALID_INPUT))
     {
         executeDelByNumberCmd(argv[TERMINAL_DEL_ARG_POS]);
     }

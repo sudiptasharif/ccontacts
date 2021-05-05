@@ -1,10 +1,10 @@
 #ifndef PBSECURITY_H_INCLUDED
 #define PBSECURITY_H_INCLUDED
 
-#include "masterHeader.h"
-
 int privilegedUser();
-int validName(const char *name);
-int validNumber(const char *number);
+int validName(char *name);
+int validNumber(char *number);
+int evalutateRegex(char *input, char *aStrRegex);
+char* trimStr(char *str);
 
 #endif

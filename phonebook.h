@@ -24,8 +24,6 @@
 #define TERMINAL_DEL_ARG_POS 2
 #define TERMINAL_MIN_ARG_COUNT 2
 
-#include "masterHeader.h"
-
 struct Command 
 {
     int cmdCode;
