@@ -25,17 +25,12 @@ int validName(char *name)
                             "^[A-Z][a-z]+[\\s][A-Z]['][A-Z][a-z]+-[A-Z][a-z]+$",
                             NULL};
     char **aStrRegex = NULL;
-    char *trmdInput = trimStr(name);
     for (aStrRegex = nameStrRegexs; *aStrRegex != NULL; aStrRegex++)
     {
-        if (evalutateRegex(trmdInput, *aStrRegex) == REGEX_MATCH_FOUND)
+        if (evalutateRegex(name, *aStrRegex) == REGEX_MATCH_FOUND)
         {
             result = VALID_INPUT;
         }
-    }
-    if (trmdInput != NULL)
-    {
-        free(trmdInput);
     }
     return result;
 }
@@ -54,17 +49,12 @@ int validNumber(char *number)
                             "^\\+[\\d]{1}[\\s]?[\\.\\-\\(]?[\\d]{3}[\\.\\-\\)]?[\\s]?[\\d]{3}[\\.\\-\\s]?[\\d]{4}$",
                             NULL};
     char **aStrRegex = NULL;
-    char *trmdInput = trimStr(number);
     for (aStrRegex = numStrRegexs; *aStrRegex != NULL; aStrRegex++)
     {
-        if (evalutateRegex(trmdInput, *aStrRegex) == REGEX_MATCH_FOUND)
+        if (evalutateRegex(number, *aStrRegex) == REGEX_MATCH_FOUND)
         {
             result = VALID_INPUT;
         }
-    }
-    if (trmdInput != NULL)
-    {
-        free(trmdInput);
     }
     return result;
 }
@@ -202,31 +192,62 @@ char *trimStr(char *str)
     return trmdStr; // must free this where returned called.
 }
 
+char* extractNumbers(char *str)
+{
+    int len = strlen(str);
+    char *numbers = (char *) malloc((len+1)*sizeof(char));
+    memset(numbers, NULL_TERMINATOR, strlen(numbers)*sizeof(numbers[0]));
+
+    int numIndex = 0;
+    for (int i = 0; i < len; i++)
+    {
+        if(str[i] == '0' || str[i] == '1' || str[i] == '2' || str[i] == '3' || str[i] == '4' || str[i] == '5' || str[i] == '6' || str[i] == '7' || str[i] == '8' || str[i] == '9')
+        {
+            numbers[numIndex] = str[i];
+            numIndex++;
+        }
+    }
+    return numbers; // Must free this where everl called.
+}
+
 // Only used during testing. Keep for maintenance
 // int main(int argc, char *argv[])
 // {
-//     int result = INVALID_INPUT;
-//     char *msg = NULL;
-//     char *inputType = NULL;
-//     if (argc == 3)
-//     {
-//         if (strncmp(argv[1], "num", 3) == 0)
-//         {
-//             result = validNumber(argv[2]);
-//             inputType = "Number";
-//         }
-//         else
-//         {
-//             result = validName(argv[2]);
-//             inputType = "Name";
-//         }
+//     // int result = INVALID_INPUT;
+//     // char *msg = NULL;
+//     // char *inputType = NULL;
+//     // if (argc == 3)
+//     // {
+//     //     if (strncmp(argv[1], "num", 3) == 0)
+//     //     {
+//     //         result = validNumber(argv[2]);
+//     //         inputType = "Number";
+//     //     }
+//     //     else
+//     //     {
+//     //         result = validName(argv[2]);
+//     //         inputType = "Name";
+//     //     }
 
-//         msg = (result == VALID_INPUT) ? "Valid" : "Invalid";
-//         printf("%s %s = %s\n", inputType, argv[2], msg);
+//     //     msg = (result == VALID_INPUT) ? "Valid" : "Invalid";
+//     //     printf("%s %s = %s\n", inputType, argv[2], msg);
+//     // }
+//     // else
+//     // {
+//     //     printf("Program stopped. Invalid input.\n");
+//     // }
+//     if (argc == 2)
+//     {
+//         char *numbers = extractNumbers(argv[1]);
+//         printf("Formatted Number: %s\n", argv[1]);
+//         printf("Unformatted Number: %s\n", numbers);
+//         free(numbers);
 //     }
 //     else
 //     {
-//         printf("Program stopped. Invalid input.\n");
+//         printf("Invalid Input\n");
 //     }
+
 //     return 0;
 // }
+

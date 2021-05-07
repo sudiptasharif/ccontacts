@@ -82,14 +82,21 @@ void executeListCmd()
         printf("\nMember list not produced. Incident reported. Try again later.\n\n");
         logErrorCode(PHONEBOOK_C_FILE, "executeListCmd", "SQLITE CODE", resultCode);
     }
+    else
+    {
+        logListCmd(getuid());
+    }
 }
 
 void executeAddCmd(char *name, char *number)
 {
-    int resultCode = add(number, number, name);
+    char *unformattedNumber = extractNumbers(number);
+    int resultCode = add(unformattedNumber, number, name);
     if (resultCode == SQLITE_DONE)
     {
         printf("\nMember added.\n\n");
+        logAddCmd(getuid(), name);
+        
     }
     else if (resultCode == SQLITE_CONSTRAINT)
     {
@@ -100,14 +107,19 @@ void executeAddCmd(char *name, char *number)
         printf("\nMember not added. Incident reported. Try again later.\n\n");
         logErrorCode(PHONEBOOK_C_FILE, "executeAddCmd", "SQLITE CODE", resultCode);
     }
+    free(unformattedNumber);
 }
 
 void executeDelByNumberCmd(char *number)
 {
-    int resultCode = deleteByNumber(number);
+    char *name = NULL; 
+    char *unformattedNumber = extractNumbers(number);
+    int resultCode = deleteByNumber(unformattedNumber);
     if (resultCode == SQLITE_DONE)
     {
         printf("\nMember deleted.\n\n.");
+        name = getNameByNumber(unformattedNumber);
+        logDeleteCmd(getuid(), name);
     }
     else if (resultCode == PHONE_BOOK_NO_RECORD)
     {
@@ -118,6 +130,8 @@ void executeDelByNumberCmd(char *number)
         printf("\nMember not deleted. Incident reported. Try again later.\n\n");
         logErrorCode(PHONEBOOK_C_FILE, "executeDelByNumberCmd", "SQLITE CODE",resultCode);
     }
+    free(unformattedNumber);
+    free(name);
 }
 
 void executeDelByNameCmd(char *name)
@@ -126,6 +140,7 @@ void executeDelByNameCmd(char *name)
     if (resultCode == SQLITE_DONE)
     {
         printf("\nMember deleted.\n\n.");
+        logDeleteCmd(getuid(), name);
     }
     else if (resultCode == PHONE_BOOK_NO_RECORD)
     {
@@ -134,26 +149,69 @@ void executeDelByNameCmd(char *name)
     else
     {
         printf("\nMember not deleted. Incident reported. Try again later.\n\n");
-        logErrorCode(PHONEBOOK_C_FILE, "executeDelByNameCmd", "SQLITE CODE", resultCode);
+        logErrorCode(PHONEBOOK_C_FILE, "executeDelByNameCmd", "SQLITE CODE:", resultCode);
     }
 }
 
 void executeCmd(struct Command cmd, char *argv[])
 {
+    char *input1 = NULL;
+    char *input2 = NULL;
+
     if (cmd.cmdCode == LIST_CMD_CODE)
     {
         executeListCmd();
     }
-    else if ((cmd.cmdCode == ADD_CMD_CODE) && (validName(argv[TERMINAL_ADD_ARG1_POS]) == VALID_INPUT) && (validNumber(argv[TERMINAL_ADD_ARG2_POS]) == VALID_INPUT))
+    else if (cmd.cmdCode == ADD_CMD_CODE)
     {
-        executeAddCmd(argv[TERMINAL_ADD_ARG1_POS], argv[TERMINAL_ADD_ARG2_POS]);
+        input1 = trimStr(argv[TERMINAL_ADD_ARG1_POS]);
+        input2 = trimStr(argv[TERMINAL_ADD_ARG2_POS]);
+
+        if (validName(input1) == VALID_INPUT)
+        {
+            if (validNumber(input2) == VALID_INPUT)
+            {
+                executeAddCmd(input1, input2);
+            }
+            else
+            {
+                printf("Program stopped. Invalid number format.\n");
+            }
+        }
+        else
+        {
+            printf("Program stopped. Invalid name format.\n");
+        }
     }
-    else if ((cmd.cmdCode == DEL_CMD_CODE) && (validName(argv[TERMINAL_DEL_ARG_POS]) == VALID_INPUT))
+    else if (cmd.cmdCode == DEL_CMD_CODE)
     {
-        executeDelByNameCmd(argv[TERMINAL_DEL_ARG_POS]);
+        input1 = trimStr(argv[TERMINAL_DEL_ARG_POS]);
+
+        if (isalpha(input1[0]))
+        {
+            if (validName(input1) == VALID_INPUT)
+            {
+                executeDelByNameCmd(input1);
+            }
+            else
+            {
+                printf("Program stopped. Invalid name format.\n");
+            }
+        }
+        else
+        {
+            if (validNumber(input1) == VALID_INPUT)
+            {
+                executeDelByNumberCmd(input1);
+            }
+            else
+            {
+                printf("Program stopped. Invalid number format.\n");
+            }
+        } 
     }
-    else if ((cmd.cmdCode == DEL_CMD_CODE) && (validNumber(argv[TERMINAL_DEL_ARG_POS]) == VALID_INPUT))
-    {
-        executeDelByNumberCmd(argv[TERMINAL_DEL_ARG_POS]);
-    }
+    if (input1 != NULL)
+        free(input1);
+    if (input2 != NULL)
+        free(input2);
 }

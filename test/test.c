@@ -25,6 +25,8 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+
+
 char* trimStr(const char *str)
 {
     int len = strlen(str);

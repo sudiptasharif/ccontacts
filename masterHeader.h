@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <sqlite3.h> 
 #include <pcre.h>
+#include<ctype.h>
 
 #include "pbSQLite.h"
 #include "pbLog.h"

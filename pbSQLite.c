@@ -85,10 +85,15 @@ int deleteByName(const char *name)
             {
                 resultCode = SQLITE_DONE;
             }
-            else if ((resultCode == SQLITE_DONE) && (recordsDeleted == 0))
+            else if (recordsDeleted == 0)
             {
                 resultCode = PHONE_BOOK_NO_RECORD;
-            }            
+            }        
+            else
+            {
+                logErrorCode(PBSQLITE_C_FILE, "deleteByName", "SQLITE CODE: ", resultCode);
+                logErrorCode(PBSQLITE_C_FILE, "deleteByName", "RECORDS DELETED: ", recordsDeleted);
+            }    
         }
         sqlite3_finalize(stmt);
     }
@@ -199,8 +204,8 @@ char* getNameByNumber(char *number)
             {
                 nameLen = strlen((const char*)sqlite3_column_text(stmt, 0));
                 name = (char*)malloc((nameLen+1)*sizeof(char));
+                memset(name, NULL_TERMINATOR, strlen(name) * sizeof(name[0]));
                 strncpy(name, (const char*)(const char*)sqlite3_column_text(stmt, 0), nameLen);
-                name[nameLen] = '\0';
             }
         }
         sqlite3_finalize(stmt);  
