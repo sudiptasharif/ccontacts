@@ -114,11 +114,11 @@ void executeDelByNumberCmd(char *number)
 {
     char *name = NULL; 
     char *unformattedNumber = extractNumbers(number);
+    name = getNameByNumber(unformattedNumber);
     int resultCode = deleteByNumber(unformattedNumber);
     if (resultCode == SQLITE_DONE)
     {
-        printf("\nMember deleted.\n\n.");
-        name = getNameByNumber(unformattedNumber);
+        printf("\nMember deleted.\n\n");
         logDeleteCmd(getuid(), name);
     }
     else if (resultCode == PHONE_BOOK_NO_RECORD)
@@ -139,7 +139,7 @@ void executeDelByNameCmd(char *name)
     int resultCode = deleteByName(name);
     if (resultCode == SQLITE_DONE)
     {
-        printf("\nMember deleted.\n\n.");
+        printf("\nMember deleted.\n\n");
         logDeleteCmd(getuid(), name);
     }
     else if (resultCode == PHONE_BOOK_NO_RECORD)

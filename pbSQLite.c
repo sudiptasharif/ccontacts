@@ -204,7 +204,7 @@ char* getNameByNumber(char *number)
             {
                 nameLen = strlen((const char*)sqlite3_column_text(stmt, 0));
                 name = (char*)malloc((nameLen+1)*sizeof(char));
-                memset(name, NULL_TERMINATOR, strlen(name) * sizeof(name[0]));
+                //memset(name, NULL_TERMINATOR, strlen(name) * sizeof(name[0]));
                 strncpy(name, (const char*)(const char*)sqlite3_column_text(stmt, 0), nameLen);
             }
         }
